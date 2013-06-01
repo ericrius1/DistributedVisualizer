@@ -42,6 +42,8 @@
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
       var numSteps = 3;
+      var frameCounter = 0;
+      var timeStep = 0;
 
       var settime = function(globe, t) {
         return function() {
@@ -81,13 +83,18 @@
       var animate = function(){
         requestAnimationFrame(animate);
         TWEEN.update();
+
+        if(frameCounter === (60 * 3)){
+          new TWEEN.Tween(globe).to({time: timeStep/years.length},500).easing(TWEEN.Easing.Cubic.Out).start();
+          timeStep ++;
+          frameCounter = 0;
+
+        }
+        frameCounter++;
       }
 
       animate();
-      setInterval(move, 500)
-      var move = function(){
-        new TWEEN.Tween(globe).to({time: t/years.length},500).easing(TWEEN.Easing.Cubic.Out).start();
-      }
+     
 
     }
 
