@@ -41,22 +41,27 @@
       var initialData;
       var fps = 60;
 
+      var xhrRequest = function(path) {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function(e) {
+          var data = JSON.parse(e.target.responseText);
+          initialData = data;
+          globe.addData(data[1], {
+            format: 'magnitude',
+            name: data[0],
+            animated: true,
+            belowGlobe: true
+          });
+          globe.createPoints();
+          globe.animate();
+        }, false);
+        xhr.open('GET', path, true);
+        xhr.send(null);
 
-      var xhr = new XMLHttpRequest();
-      xhr.addEventListener('load', function(e) {
-        var data = JSON.parse(e.target.responseText);
-        initialData = data;
-        globe.addData(data[1], {
-          format: 'magnitude',
-          name: data[0],
-          animated: true,
-          belowGlobe: true
-        });
-        globe.createPoints();
-        globe.animate();
-      }, false);
-      xhr.open('GET', 'initialRequest.json', true);
-      xhr.send(null);
+      }
+
+
+      xhrRequest('initialRequest.json');
 
       var animate = function() {
         requestAnimationFrame(animate);
@@ -82,19 +87,15 @@
 
       }
 
-  var handleRequestTiming = function() {
-    if (requestFrameCounter === fps * 2) {
-      console.log("shnur");
-     
-    requestFrameCounter++;
-    }
-  }
+      var handleRequestTiming = function() {
+        if (requestFrameCounter === fps * 2) {
+          console.log("shnur");
 
+          requestFrameCounter++;
+        }
+      }
 
       animate();
-
-
-
     }
 
   </script>
