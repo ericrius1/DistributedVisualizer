@@ -200,6 +200,57 @@ DAT.Globe = function(container) {
     }, false);
   }
 
+  addInitialData = function(data, opts){
+    var lat, lng, size, color, i, step
+
+    opts.animated = opts.animated || false;
+    this.is_animated = opts.animated;
+    opts.format = opts.format || 'magnitude'; // other option is 'legend'
+    console.log(opts.format);
+    if (opts.format === 'magnitude') {
+      step = 3;
+    } else {
+      throw ('error: format not supported: ' + opts.format);
+    }
+
+    if (opts.animated) {
+      if (this._constantGeometry === undefined) {
+        this._constantGeometry = new THREE.Geometry();
+        for (i = 0; i < data.length; i += step) {
+          lat = data[i];
+          lng = data[i + 1];
+          size = 0;
+          addPoint(lat, lng, size, this._constantGeometry);
+        }
+      }
+      if (this._morphTargetId === undefined) {
+        this._morphTargetId = 0;
+      } else {
+        this._morphTargetId += 1;
+      }
+      opts.name = opts.name || 'morphTarget' + this._morphTargetId;
+    }
+    var subgeo = new THREE.Geometry();
+    var belowGlobe = opts.belowGlobe;
+    for (i = 0; i < data.length; i += step) {
+      lat = data[i];
+      lng = data[i + 1];
+      size = belowGlobe === true ? 0.01 : data[i + 2];
+
+      size = size * 200
+      addPoint(lat, lng, size, subgeo);
+    }
+    if (opts.animated) {
+      this._constantGeometry.morphTargets.push({
+        'name': opts.name,
+        vertices: subgeo.vertices
+      });
+    } else {
+      this._constantGeometry = subgeo;
+    }
+
+  }
+
   addData = function(data, opts) {
     var lat, lng, size, color, i, step
 
@@ -250,7 +301,7 @@ DAT.Globe = function(container) {
     }
   };
 
-  function createPoints() {
+  function createUpdatedPoints() {
     if (this._baseGeometry !== undefined) {
       if (this.is_animated === false) {
         this.points = new THREE.Mesh(this._baseGeometry, new THREE.MeshBasicMaterial({
@@ -276,6 +327,35 @@ DAT.Globe = function(container) {
       }
       scene.add(this.points);
     }
+  }
+
+  function createInitialPoints() {
+    if (this._constantGeometry !== undefined) {
+      if (this.is_animated === false) {
+        this.constantPoints = new THREE.Mesh(this._constantGeometry, new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: false
+        }));
+      } else {
+        if (this._constantGeometry.morphTargets.length < 8) {
+          var padding = 8 - this._constantGeometry.morphTargets.length;
+          for (var i = 0; i <= padding; i++) {
+            this._constantGeometry.morphTargets.push({
+              'name': 'morphPadding' + i,
+              vertices: this._constantGeometry.vertices
+            });
+          }
+        }
+        this.constantPoints = new THREE.Mesh(this._constantGeometry, new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: true
+        }));
+      }
+      scene.add(this.constantPoints);
+    }
+
   }
 
   function deletePoints() {
@@ -418,6 +498,7 @@ DAT.Globe = function(container) {
   });
 
   this.__defineSetter__('time', function(t) {
+    debugger;
     var validMorphs = [];
     var morphDict = this.points.morphTargetDictionary;
     for (var k in morphDict) {
@@ -442,8 +523,10 @@ DAT.Globe = function(container) {
   });
 
   this.addData = addData;
-  this.createPoints = createPoints;
+  this.createUpdatedPoints = createUpdatedPoints;
   this.deletePoints = deletePoints;
+  this.addInitialData = addInitialData;
+  this.createInitialPoints = createInitialPoints;
   this.renderer = renderer;
   this.scene = scene;
 

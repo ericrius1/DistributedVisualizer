@@ -40,26 +40,43 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
+      var data;
 
-      var xhrRequest = function(path) {
+      var xhrRequest = function(path, isInitialRequest) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
-          initialData = data;
-          globe.addData(data[1], {
-            format: 'magnitude',
-            name: data[0],
-            animated: true,
-            belowGlobe: true
-          });
-          globe.addData(data[1], {
-          format: 'magnitude',
-          name: data[0],
-          animated: true,
-          belowGlobe:  false
-        });
-          globe.createPoints();
-          globe.animate();
+          if (isInitialRequest) {
+            globe.addInitialData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: true
+            });
+            globe.addInitialData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: false
+            });
+            globe.createInitialPoints();
+            // globe.animate();
+          } else {
+            globe.addData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: true
+            });
+            globe.addData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: false
+            });
+            globe.createUpdatedPoints();
+            globe.animate();
+          }
         }, false);
         xhr.open('GET', path, true);
         xhr.send(null);
@@ -67,7 +84,7 @@
       }
 
 
-      xhrRequest('initialRequest.json');
+      xhrRequest('initialRequest.json', true);
 
       var animate = function() {
         requestAnimationFrame(animate);
@@ -99,7 +116,7 @@
           requestFrameCounter = 0;
           globe.deletePoints();
           xhrRequest('updatedRequest.json')
-          
+
         }
         requestFrameCounter++;
       }
