@@ -17,7 +17,7 @@ DAT.Globe = function(container, colorFn) {
 
   colorFn = colorFn || function(x) {
     var c = new THREE.Color();
-    c.setHSV( ( 0.6 - ( x * 0.5 ) ), 1.0, 1.0 );
+    c.setRGB( x, 0, x);
     return c;
   };
 
@@ -60,7 +60,7 @@ DAT.Globe = function(container, colorFn) {
         'varying vec3 vNormal;',
         'void main() {',
           'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
-          'gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;',
+          'gl_FragColor = vec4( 0.8, 0.1, 1.0, 0.8 ) * intensity;',
         '}'
       ].join('\n')
     }
@@ -179,10 +179,8 @@ DAT.Globe = function(container, colorFn) {
     console.log(opts.format);
     if (opts.format === 'magnitude') {
       step = 3;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+2]); }
-    } else if (opts.format === 'legend') {
-      step = 4;
-      colorFnWrapper = function(data, i) { return colorFn(data[i+3]); }
+      debugger;
+      colorFnWrapper = function(height) { return colorFn(height); }
     } else {
       throw('error: format not supported: '+opts.format);
     }
@@ -193,9 +191,8 @@ DAT.Globe = function(container, colorFn) {
         for (i = 0; i < data.length; i += step) {
           lat = data[i];
           lng = data[i + 1];
-//        size = data[i + 2];
-          color = colorFnWrapper(data,i);
           size = 0;
+          color = colorFnWrapper(size);
           addPoint(lat, lng, size, color, this._baseGeometry);
         }
       }
@@ -210,8 +207,8 @@ DAT.Globe = function(container, colorFn) {
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      color = colorFnWrapper(data,i);
       size = opts.height;
+      color = colorFnWrapper(size);
       size = size*200;
       addPoint(lat, lng, size, color, subgeo);
     }
