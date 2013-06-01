@@ -46,37 +46,37 @@
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
-          if (isInitialRequest) {
-            globe.addInitialData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: true,
-              belowGlobe: true
-            });
-            globe.addInitialData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: true,
-              belowGlobe: false
-            });
-            globe.createInitialPoints();
-            globe.animate();
-          }
-          // } else {
-          //   globe.addData(data[1], {
+          // if (isInitialRequest) {
+          //   globe.addInitialData(data[1], {
           //     format: 'magnitude',
           //     name: data[0],
           //     animated: true,
           //     belowGlobe: true
           //   });
-          //   globe.addData(data[1], {
+          //   globe.addInitialData(data[1], {
           //     format: 'magnitude',
           //     name: data[0],
           //     animated: true,
           //     belowGlobe: false
           //   });
-          //   globe.createUpdatedPoints();
+          //   globe.createInitialPoints();
           //   globe.animate();
+          // }
+          // } else {
+            globe.addData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: true
+            });
+            globe.addData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: false
+            });
+            globe.createUpdatedPoints();
+            globe.animate();
           // }
         }, false);
         xhr.open('GET', path, true);
@@ -98,7 +98,7 @@
         if (throbbingFrameCounter === (10)) {
           //tween to new height every second
           new TWEEN.Tween(globe).to({
-            constantPoints: timeStep / numSteps
+            time: timeStep / numSteps
           }, 500).easing(TWEEN.Easing.Cubic.Out).start();
           timeStep++;
           throbbingFrameCounter = 0;
