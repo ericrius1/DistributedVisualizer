@@ -13,11 +13,11 @@
 
 var DAT = DAT || {};
 
-DAT.Globe = function(container, colorFn) {
+DAT.Globe = function(container) {
 
-  colorFn = colorFn || function(x) {
+  getColor = function(position) {
     var c = new THREE.Color();
-    c.setRGB( x, 0, x);
+    c.setRGB(1, 1, 1);
     return c;
   };
 
@@ -171,7 +171,7 @@ DAT.Globe = function(container, colorFn) {
   }
 
   addData = function(data, opts) {
-    var lat, lng, size, color, i, step, colorFnWrapper;
+    var lat, lng, size, color, i, step
 
     opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
@@ -179,8 +179,6 @@ DAT.Globe = function(container, colorFn) {
     console.log(opts.format);
     if (opts.format === 'magnitude') {
       step = 3;
-      debugger;
-      colorFnWrapper = function(height) { return colorFn(height); }
     } else {
       throw('error: format not supported: '+opts.format);
     }
@@ -192,8 +190,7 @@ DAT.Globe = function(container, colorFn) {
           lat = data[i];
           lng = data[i + 1];
           size = 0;
-          color = colorFnWrapper(size);
-          addPoint(lat, lng, size, color, this._baseGeometry);
+          addPoint(lat, lng, size, this._baseGeometry);
         }
       }
       if(this._morphTargetId === undefined) {
@@ -208,9 +205,8 @@ DAT.Globe = function(container, colorFn) {
       lat = data[i];
       lng = data[i + 1];
       size = opts.height;
-      color = colorFnWrapper(size);
       size = size*200;
-      addPoint(lat, lng, size, color, subgeo);
+      addPoint(lat, lng, size, subgeo);
     }
     if (opts.animated) {
       this._baseGeometry.morphTargets.push({'name': opts.name, vertices: subgeo.vertices});
@@ -248,14 +244,14 @@ DAT.Globe = function(container, colorFn) {
     }
   }
 
-  function addPoint(lat, lng, size, color, subgeo) {
+  function addPoint(lat, lng, size, subgeo) {
     var phi = (90 - lat) * Math.PI / 180;
     var theta = (180 - lng) * Math.PI / 180;
 
     point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
     point.position.y = 200 * Math.cos(phi);
     point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
-
+    var color = getColor(point.position);
     point.lookAt(mesh.position);
 
     point.scale.z = -size;
