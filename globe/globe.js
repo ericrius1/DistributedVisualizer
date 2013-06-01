@@ -13,7 +13,8 @@
 
 var DAT = DAT || {};
 
-DAT.Globe = function(container, colorFn) {
+DAT.Globe = function(container, numSteps, colorFn) {
+  debugger;
 
   colorFn = colorFn || function(x) {
     var c = new THREE.Color();
@@ -76,8 +77,6 @@ DAT.Globe = function(container, colorFn) {
   var curZoomSpeed = 0;
   var zoomSpeed = 50;
 
-  var jobEmitters = [];
-
   var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
   var rotation = { x: 0, y: 0 },
       target = { x: Math.PI*3/2, y: Math.PI / 6.0 },
@@ -86,6 +85,7 @@ DAT.Globe = function(container, colorFn) {
   var distance = 100000, distanceTarget = 100000;
   var padding = 40;
   var PI_HALF = Math.PI / 2;
+  var numSteps = numSteps;
 
   function init() {
 
@@ -192,10 +192,10 @@ DAT.Globe = function(container, colorFn) {
     if (opts.animated) {
       if (this._baseGeometry === undefined) {
         this._baseGeometry = new THREE.Geometry();
+        //Sets up initial starting points for all locations
         for (i = 0; i < data.length; i += step) {
           lat = data[i];
           lng = data[i + 1];
-//        size = data[i + 2];
           color = colorFnWrapper(data,i);
           size = 0;
           addPoint(lat, lng, size, color, this._baseGeometry);
@@ -209,11 +209,12 @@ DAT.Globe = function(container, colorFn) {
       opts.name = opts.name || 'morphTarget'+this._morphTargetId;
     }
     var subgeo = new THREE.Geometry();
+    //Sets up all these points at specified height
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
       color = colorFnWrapper(data,i);
-      size = data[i + 2];
+      size = opts.height
       size = size*200;
       addPoint(lat, lng, size, color, subgeo);
     }
@@ -271,10 +272,6 @@ DAT.Globe = function(container, colorFn) {
     }
 
     THREE.GeometryUtils.merge(subgeo, point);
-    if(jobEmitters.length < 2){
-         jobEmitters.push(new DAT.JobEmitter(globe, point.position));
-    }
- 
 
   }
 
