@@ -40,29 +40,30 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
+      var numSecondsBetweenRequests = 3;
       var data;
 
       var xhrRequest = function(path, isInitialRequest) {
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
-          // if (isInitialRequest) {
-          //   globe.addInitialData(data[1], {
-          //     format: 'magnitude',
-          //     name: data[0],
-          //     animated: true,
-          //     belowGlobe: true
-          //   });
-          //   globe.addInitialData(data[1], {
-          //     format: 'magnitude',
-          //     name: data[0],
-          //     animated: true,
-          //     belowGlobe: false
-          //   });
-          //   globe.createInitialPoints();
-          //   globe.animate();
-          // }
-          // } else {
+          if (isInitialRequest) {
+            globe.addInitialData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: true
+            });
+            globe.addInitialData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: false
+            });
+            globe.createInitialPoints();
+            globe.setUpTweening();
+            globe.animate();
+          } else {
             globe.addData(data[1], {
               format: 'magnitude',
               name: data[0],
@@ -75,9 +76,10 @@
               animated: true,
               belowGlobe: false
             });
+
             globe.createUpdatedPoints();
-            globe.animate();
-          // }
+            globe.setUpTweening();
+           }
         }, false);
         xhr.open('GET', path, true);
         xhr.send(null);
@@ -112,11 +114,11 @@
       }
 
       var handleRequestTiming = function() {
-        if (requestFrameCounter === fps * 2) {
+        if (requestFrameCounter === fps * numSecondsBetweenRequests) {
           console.log("shnur");
           requestFrameCounter = 0;
           globe.deletePoints();
-          xhrRequest('updatedRequest.json')
+          xhrRequest('updatedRequest.json', false)
 
         }
         requestFrameCounter++;
