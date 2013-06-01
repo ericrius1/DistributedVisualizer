@@ -84,6 +84,10 @@
       }
 
       animate();
+      setInterval(move, 500)
+      var move = function(){
+        new TWEEN.Tween(globe).to({time: t/years.length},500).easing(TWEEN.Easing.Cubic.Out).start();
+      }
 
     }
 
