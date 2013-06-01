@@ -45,7 +45,7 @@
         window.data = data;
         for (var i=0;i<numSteps;i++) {
           var height =  i/100 * Math.pow(i, 2);
-          globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true, height: height});
+          globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true});
         }
         globe.createPoints();
         globe.animate();

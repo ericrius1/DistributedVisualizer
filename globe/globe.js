@@ -210,7 +210,7 @@ DAT.Globe = function(container) {
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      size = (opts.height*10)  * Math.random()/10;
+      size = data[i+2];
       size = size*200;
       addPoint(lat, lng, size, subgeo);
     }
