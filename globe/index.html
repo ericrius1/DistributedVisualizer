@@ -60,23 +60,24 @@
               belowGlobe: false
             });
             globe.createInitialPoints();
-            // globe.animate();
-          } else {
-            globe.addData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: true,
-              belowGlobe: true
-            });
-            globe.addData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: true,
-              belowGlobe: false
-            });
-            globe.createUpdatedPoints();
             globe.animate();
           }
+          // } else {
+          //   globe.addData(data[1], {
+          //     format: 'magnitude',
+          //     name: data[0],
+          //     animated: true,
+          //     belowGlobe: true
+          //   });
+          //   globe.addData(data[1], {
+          //     format: 'magnitude',
+          //     name: data[0],
+          //     animated: true,
+          //     belowGlobe: false
+          //   });
+          //   globe.createUpdatedPoints();
+          //   globe.animate();
+          // }
         }, false);
         xhr.open('GET', path, true);
         xhr.send(null);
@@ -97,7 +98,7 @@
         if (throbbingFrameCounter === (10)) {
           //tween to new height every second
           new TWEEN.Tween(globe).to({
-            time: timeStep / numSteps
+            constantPoints: timeStep / numSteps
           }, 500).easing(TWEEN.Easing.Cubic.Out).start();
           timeStep++;
           throbbingFrameCounter = 0;

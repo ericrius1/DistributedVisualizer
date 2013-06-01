@@ -493,11 +493,11 @@ DAT.Globe = function(container) {
   this.animate = animate;
 
 
-  this.__defineGetter__('time', function() {
+  this.__defineGetter__('updatedPoints', function() {
     return this._time || 0;
   });
 
-  this.__defineSetter__('time', function(t) {
+  this.__defineSetter__('updatedPoints', function(t) {
     debugger;
     var validMorphs = [];
     var morphDict = this.points.morphTargetDictionary;
