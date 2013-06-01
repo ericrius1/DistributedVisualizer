@@ -52,6 +52,12 @@
             animated: true,
             belowGlobe: true
           });
+          globe.addData(data[1], {
+          format: 'magnitude',
+          name: data[0],
+          animated: true,
+          belowGlobe:  false
+        });
           globe.createPoints();
           globe.animate();
         }, false);
