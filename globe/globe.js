@@ -17,9 +17,9 @@ DAT.Globe = function(container) {
 
   getColor = function(position) {
     var c = new THREE.Color();
-    var r = map(position.x, -199, 198, 0, 1 )
+    var r = map(position.x, -199, 198, 1, 0 )
     var g = map(position.y, -199, 198, 0, 1 )
-    var b = map(position.z, -199, 198, 0, 1 )
+    var b = map(position.z, -199, 198, 1, 0 )
     c.setRGB(r, g, b);
     return c;
   };
@@ -210,7 +210,7 @@ DAT.Globe = function(container) {
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      size = opts.height + Math.random()/5;
+      size = (opts.height*10)  * Math.random()/10;
       size = size*200;
       addPoint(lat, lng, size, subgeo);
     }
