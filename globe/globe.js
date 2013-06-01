@@ -203,7 +203,7 @@ DAT.Globe = function(container) {
   addData = function(data, opts) {
     var lat, lng, size, color, i, step
 
-      opts.animated = opts.animated || false;
+    opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
     opts.format = opts.format || 'magnitude'; // other option is 'legend'
     console.log(opts.format);
@@ -278,12 +278,19 @@ DAT.Globe = function(container) {
     }
   }
 
+  function deletePoints() {
+    console.log("bdur");
+    scene.remove(this.points)
+    //scene.remove(this._baseGeometry);
+
+  }
+
   function addPoint(lat, lng, size, subgeo, isBasePoint) {
     var phi = (90 - lat) * Math.PI / 180;
     var theta = (180 - lng) * Math.PI / 180;
 
-    point.position.x =  200 *Math.sin(phi) * Math.cos(theta);
-    point.position.y =  200 * Math.cos(phi);
+    point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
+    point.position.y = 200 * Math.cos(phi);
     point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
 
     var color = getColor(point.position);
@@ -436,6 +443,7 @@ DAT.Globe = function(container) {
 
   this.addData = addData;
   this.createPoints = createPoints;
+  this.deletePoints = deletePoints;
   this.renderer = renderer;
   this.scene = scene;
 

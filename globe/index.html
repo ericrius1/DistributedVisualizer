@@ -97,6 +97,7 @@
         if (requestFrameCounter === fps * 2) {
           console.log("shnur");
           requestFrameCounter = 0;
+          globe.deletePoints();
           xhrRequest('updatedRequest.json')
           
         }
