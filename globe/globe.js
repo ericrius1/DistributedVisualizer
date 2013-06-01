@@ -17,54 +17,57 @@ DAT.Globe = function(container) {
 
   getColor = function(position) {
     var c = new THREE.Color();
-    var r = map(position.x, -199, 198, 1, 0 )
-    var g = map(position.y, -199, 198, 0, 1 )
-    var b = map(position.z, -199, 198, 1, 0 )
+    var r = map(position.x, -199, 198, 1, 0)
+    var g = map(position.y, -199, 198, 0, 1)
+    var b = map(position.z, -199, 198, 1, 0)
     c.setRGB(r, g, b);
     return c;
   };
 
   var Shaders = {
-    'earth' : {
+    'earth': {
       uniforms: {
-        'texture': { type: 't', value: null }
+        'texture': {
+          type: 't',
+          value: null
+        }
       },
       vertexShader: [
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
           'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
           'vNormal = normalize( normalMatrix * normal );',
           'vUv = uv;',
-        '}'
+          '}'
       ].join('\n'),
       fragmentShader: [
-        'uniform sampler2D texture;',
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
+          'uniform sampler2D texture;',
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
           'vec3 diffuse = texture2D( texture, vUv ).xyz;',
           'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
           'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
           'gl_FragColor = vec4( diffuse + atmosphere, 1.0 );',
-        '}'
+          '}'
       ].join('\n')
     },
-    'atmosphere' : {
+    'atmosphere': {
       uniforms: {},
       vertexShader: [
-        'varying vec3 vNormal;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'void main() {',
           'vNormal = normalize( normalMatrix * normal );',
           'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-        '}'
+          '}'
       ].join('\n'),
       fragmentShader: [
-        'varying vec3 vNormal;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'void main() {',
           'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
           'gl_FragColor = vec4( 0.8, 0.1, 1.0, 0.8 ) * intensity;',
-        '}'
+          '}'
       ].join('\n')
     }
   };
@@ -78,16 +81,29 @@ DAT.Globe = function(container) {
 
   var curZoomSpeed = 0;
   var zoomSpeed = 50;
-  var xPositions = [];
-  var yPositions = [];
-  var zPositions = [];
 
-  var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
-  var rotation = { x: 0, y: 0 },
-      target = { x: Math.PI*3/2, y: Math.PI / 6.0 },
-      targetOnDown = { x: 0, y: 0 };
+  var mouse = {
+    x: 0,
+    y: 0
+  }, mouseOnDown = {
+      x: 0,
+      y: 0
+    };
+  var rotation = {
+    x: 0,
+    y: 0
+  },
+    target = {
+      x: Math.PI * 3 / 2,
+      y: Math.PI / 6.0
+    },
+    targetOnDown = {
+      x: 0,
+      y: 0
+    };
 
-  var distance = 100000, distanceTarget = 100000;
+  var distance = 100000,
+    distanceTarget = 100000;
   var padding = 40;
   var PI_HALF = Math.PI / 2;
 
@@ -100,7 +116,7 @@ DAT.Globe = function(container) {
     w = container.offsetWidth || window.innerWidth;
     h = container.offsetHeight || window.innerHeight;
 
-    camera = new THREE.PerspectiveCamera( 30, w / h, 1, 10000);
+    camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
     camera.position.z = distance;
 
     vector = new THREE.Vector3();
@@ -113,16 +129,16 @@ DAT.Globe = function(container) {
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-    uniforms['texture'].value = THREE.ImageUtils.loadTexture(imgDir+'world' +
-        '.jpg');
+    uniforms['texture'].value = THREE.ImageUtils.loadTexture(imgDir + 'world' +
+      '.jpg');
 
     material = new THREE.ShaderMaterial({
 
-          uniforms: uniforms,
-          vertexShader: shader.vertexShader,
-          fragmentShader: shader.fragmentShader
+      uniforms: uniforms,
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader
 
-        });
+    });
 
     mesh = new THREE.Mesh(geometry, material);
     mesh.rotation.y = Math.PI;
@@ -133,25 +149,33 @@ DAT.Globe = function(container) {
 
     material = new THREE.ShaderMaterial({
 
-          uniforms: uniforms,
-          vertexShader: shader.vertexShader,
-          fragmentShader: shader.fragmentShader,
-          side: THREE.BackSide
+      uniforms: uniforms,
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader,
+      side: THREE.BackSide
 
-        });
+    });
 
     mesh = new THREE.Mesh(geometry, material);
     mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.1;
     sceneAtmosphere.add(mesh);
 
-    geometry = new THREE.CubeGeometry(0.75, 0.75, 1, 1, 1, 1, undefined, { px: true,
-          nx: true, py: true, ny: true, pz: false, nz: true});
+    geometry = new THREE.CubeGeometry(0.75, 0.75, 1, 1, 1, 1, undefined, {
+      px: true,
+      nx: true,
+      py: true,
+      ny: true,
+      pz: false,
+      nz: true
+    });
 
-    geometry.applyMatrix( new THREE.Matrix4().makeTranslation(0,0,0.5) );
+    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, 0.5));
 
     point = new THREE.Mesh(geometry);
 
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
     renderer.autoClear = false;
     renderer.setClearColorHex(0x000000, 0.0);
     renderer.setSize(w, h);
@@ -179,14 +203,14 @@ DAT.Globe = function(container) {
   addData = function(data, opts) {
     var lat, lng, size, color, i, step
 
-    opts.animated = opts.animated || false;
+      opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
     opts.format = opts.format || 'magnitude'; // other option is 'legend'
     console.log(opts.format);
     if (opts.format === 'magnitude') {
       step = 3;
     } else {
-      throw('error: format not supported: '+opts.format);
+      throw ('error: format not supported: ' + opts.format);
     }
 
     if (opts.animated) {
@@ -199,70 +223,71 @@ DAT.Globe = function(container) {
           addPoint(lat, lng, size, this._baseGeometry);
         }
       }
-      if(this._morphTargetId === undefined) {
+      if (this._morphTargetId === undefined) {
         this._morphTargetId = 0;
       } else {
         this._morphTargetId += 1;
       }
-      opts.name = opts.name || 'morphTarget'+this._morphTargetId;
+      opts.name = opts.name || 'morphTarget' + this._morphTargetId;
     }
     var subgeo = new THREE.Geometry();
+    var belowGlobe = opts.belowGlobe;
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      size = data[i+2];
-      size = size*200;
+      size = belowGlobe === true ? 0.0 : data[i + 2];
+
+      size = size * 200
       addPoint(lat, lng, size, subgeo);
     }
     if (opts.animated) {
-      this._baseGeometry.morphTargets.push({'name': opts.name, vertices: subgeo.vertices});
+      this._baseGeometry.morphTargets.push({
+        'name': opts.name,
+        vertices: subgeo.vertices
+      });
     } else {
       this._baseGeometry = subgeo;
     }
-
-    console.log("xMin ", _.min(xPositions));
-    console.log("xMax ", _.max(xPositions));
-    console.log("yMin ", _.min(yPositions));
-    console.log("yMax ", _.max(yPositions));
-    console.log("zMin ", _.min(zPositions));
-    console.log("zMax ", _.max(zPositions));
   };
 
   function createPoints() {
     if (this._baseGeometry !== undefined) {
       if (this.is_animated === false) {
         this.points = new THREE.Mesh(this._baseGeometry, new THREE.MeshBasicMaterial({
-              color: 0xffffff,
-              vertexColors: THREE.FaceColors,
-              morphTargets: false
-            }));
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: false
+        }));
       } else {
         if (this._baseGeometry.morphTargets.length < 8) {
-          var padding = 8-this._baseGeometry.morphTargets.length;
-          for(var i=0; i<=padding; i++) {
-            this._baseGeometry.morphTargets.push({'name': 'morphPadding'+i, vertices: this._baseGeometry.vertices});
+          var padding = 8 - this._baseGeometry.morphTargets.length;
+          for (var i = 0; i <= padding; i++) {
+            this._baseGeometry.morphTargets.push({
+              'name': 'morphPadding' + i,
+              vertices: this._baseGeometry.vertices
+            });
           }
         }
         this.points = new THREE.Mesh(this._baseGeometry, new THREE.MeshBasicMaterial({
-              color: 0xffffff,
-              vertexColors: THREE.FaceColors,
-              morphTargets: true
-            }));
+          color: 0xffffff,
+          vertexColors: THREE.FaceColors,
+          morphTargets: true
+        }));
       }
       scene.add(this.points);
     }
   }
 
-  function addPoint(lat, lng, size, subgeo) {
+  function addPoint(lat, lng, size, subgeo, isBasePoint) {
     var phi = (90 - lat) * Math.PI / 180;
     var theta = (180 - lng) * Math.PI / 180;
 
-    point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
-    point.position.y = 200 * Math.cos(phi);
+    point.position.x =  200 *Math.sin(phi) * Math.cos(theta);
+    point.position.y =  200 * Math.cos(phi);
     point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
-    xPositions.push(200 * Math.sin(phi) * Math.cos(theta))
-    yPositions.push( 200 * Math.cos(phi))
-    zPositions.push(200 * Math.sin(phi) * Math.sin(theta))
+
+
+
     var color = getColor(point.position);
     point.lookAt(mesh.position);
 
@@ -283,7 +308,7 @@ DAT.Globe = function(container) {
     container.addEventListener('mouseup', onMouseUp, false);
     container.addEventListener('mouseout', onMouseOut, false);
 
-    mouseOnDown.x = - event.clientX;
+    mouseOnDown.x = -event.clientX;
     mouseOnDown.y = event.clientY;
 
     targetOnDown.x = target.x;
@@ -292,21 +317,21 @@ DAT.Globe = function(container) {
     container.style.cursor = 'move';
   }
 
-  function map(value, istart,  istop, ostart, ostop){
+  function map(value, istart, istop, ostart, ostop) {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
 
   function onMouseMove(event) {
-    mouse.x = - event.clientX;
+    mouse.x = -event.clientX;
     mouse.y = event.clientY;
 
-    var zoomDamp = distance/1000;
+    var zoomDamp = distance / 1000;
 
     target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
     target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
 
     target.y = target.y > PI_HALF ? PI_HALF : target.y;
-    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
+    target.y = target.y < -PI_HALF ? -PI_HALF : target.y;
   }
 
   function onMouseUp(event) {
@@ -343,10 +368,10 @@ DAT.Globe = function(container) {
     }
   }
 
-  function onWindowResize( event ) {
+  function onWindowResize(event) {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   function zoom(delta) {
@@ -390,16 +415,16 @@ DAT.Globe = function(container) {
   this.__defineSetter__('time', function(t) {
     var validMorphs = [];
     var morphDict = this.points.morphTargetDictionary;
-    for(var k in morphDict) {
-      if(k.indexOf('morphPadding') < 0) {
+    for (var k in morphDict) {
+      if (k.indexOf('morphPadding') < 0) {
         validMorphs.push(morphDict[k]);
       }
     }
     validMorphs.sort();
-    var l = validMorphs.length-1;
-    var scaledt = t*l+1;
+    var l = validMorphs.length - 1;
+    var scaledt = t * l + 1;
     var index = Math.floor(scaledt);
-    for (i=0;i<validMorphs.length;i++) {
+    for (i = 0; i < validMorphs.length; i++) {
       this.points.morphTargetInfluences[validMorphs[i]] = 0;
     }
     var lastIndex = index - 1;
@@ -419,4 +444,3 @@ DAT.Globe = function(container) {
   return this;
 
 };
-

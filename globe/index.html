@@ -34,9 +34,10 @@
 
       var container = document.getElementById('container');
       var globe = new DAT.Globe(container);
-      var numSteps = 3;
-      var frameCounter = 0;
-      var timeStep = 1;
+      var numSteps = 2;
+      var throbbingFrameCounter = 0;
+      var requestFrameCounter
+      var timeStep = 0;
 
     
       var xhr = new XMLHttpRequest();
@@ -44,30 +45,31 @@
         var data = JSON.parse(e.target.responseText);
         window.data = data;
         for (var i=0;i<numSteps;i++) {
-          var height =  i/100 * Math.pow(i, 2);
-          globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true});
+          var belowGlobe = i === 0 ? true : false;
+          globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true, belowGlobe:belowGlobe});
         }
+
         globe.createPoints();
         globe.animate();
       }, false);
-      xhr.open('GET', 'population909500.json', true);
+      xhr.open('GET', 'initialRequest.json', true);
       xhr.send(null);
 
       var animate = function(){
         requestAnimationFrame(animate);
         TWEEN.update();
 
-        if(frameCounter === (10)){
+        if(throbbingFrameCounter === (10)){
           //tween to new height every second
           new TWEEN.Tween(globe).to({time: timeStep/numSteps},500).easing(TWEEN.Easing.Cubic.Out).start();
           timeStep ++;
-          frameCounter = 0;
+          throbbingFrameCounter = 0;
           if(timeStep > numSteps){
             timeStep = 0;
           }
 
         }
-        frameCounter++;
+        throbbingFrameCounter++;
       }
 
       animate();
