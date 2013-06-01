@@ -90,9 +90,11 @@
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * 2) {
           console.log("shnur");
-
-          requestFrameCounter++;
+          requestFrameCounter = 0;
+          xhrRequest('updatedRequest.json')
+          
         }
+        requestFrameCounter++;
       }
 
       animate();
