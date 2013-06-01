@@ -44,10 +44,9 @@
       xhr.addEventListener('load', function(e) {
         var data = JSON.parse(e.target.responseText);
         window.data = data;
-        for (var i=0;i<numSteps;i++) {
-          var belowGlobe = i === 0 ? true : false;
-          globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true, belowGlobe:belowGlobe});
-        }
+        globe.addData(data[0][1], {format: 'magnitude', name: data[0][0], animated: true, belowGlobe:true});
+        globe.addData(data[1][1], {format: 'magnitude', name: data[1][0], animated: true, belowGlobe:false});
+        
 
         globe.createPoints();
         globe.animate();
