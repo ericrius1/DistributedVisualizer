@@ -235,7 +235,7 @@ DAT.Globe = function(container) {
     for (i = 0; i < data.length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      size = belowGlobe === true ? 0.0 : data[i + 2];
+      size = belowGlobe === true ? 0.02 : data[i + 2];
 
       size = size * 200
       addPoint(lat, lng, size, subgeo);
