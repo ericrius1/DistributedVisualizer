@@ -22,12 +22,12 @@
   <script src="globe.js"></script>
   <script>
 
-    if(System.support.webgl === false){
+    if (System.support.webgl === false) {
 
-      var message = document.createElement( 'div' );
+      var message = document.createElement('div');
       message.style.cssText = 'font-family:monospace;font-size:13px;text-align:center;color:#fff;background:#333;padding:1em;width:540px;margin:30em auto 0';
       message.innerHTML = 'Either your graphics card or your browser does not support WebGL.<br /><a href="http://www.khronos.org/webgl/wiki_1_15/index.php/Getting_a_WebGL_Implementation">View a list</a> of WebGL compatible browsers.';
-      document.body.appendChild( message );
+      document.body.appendChild(message);
       document.body.style.background = '#000000';
 
     } else {
@@ -36,41 +36,64 @@
       var globe = new DAT.Globe(container);
       var numSteps = 2;
       var throbbingFrameCounter = 0;
-      var requestFrameCounter
+      var requestFrameCounter = 0;
       var timeStep = 0;
       var initialData;
+      var fps = 60;
 
-    
+
       var xhr = new XMLHttpRequest();
       xhr.addEventListener('load', function(e) {
         var data = JSON.parse(e.target.responseText);
         initialData = data;
-        globe.addData(data[1], {format: 'magnitude', name: data[0], animated: true, belowGlobe:true});
+        globe.addData(data[1], {
+          format: 'magnitude',
+          name: data[0],
+          animated: true,
+          belowGlobe: true
+        });
         globe.createPoints();
         globe.animate();
       }, false);
       xhr.open('GET', 'initialRequest.json', true);
       xhr.send(null);
 
-      var animate = function(){
+      var animate = function() {
         requestAnimationFrame(animate);
         TWEEN.update();
+        handleThrobbingAnimation();
+        handleRequestTiming();
+      }
 
-        if(throbbingFrameCounter === (10)){
+      var handleThrobbingAnimation = function() {
+        if (throbbingFrameCounter === (10)) {
           //tween to new height every second
-          new TWEEN.Tween(globe).to({time: timeStep/numSteps},500).easing(TWEEN.Easing.Cubic.Out).start();
-          timeStep ++;
+          new TWEEN.Tween(globe).to({
+            time: timeStep / numSteps
+          }, 500).easing(TWEEN.Easing.Cubic.Out).start();
+          timeStep++;
           throbbingFrameCounter = 0;
-          if(timeStep > numSteps){
+          if (timeStep > numSteps) {
             timeStep = 0;
           }
 
         }
         throbbingFrameCounter++;
+
       }
 
-      animate();
+  var handleRequestTiming = function() {
+    if (requestFrameCounter === fps * 2) {
+      console.log("shnur");
      
+    requestFrameCounter++;
+    }
+  }
+
+
+      animate();
+
+
 
     }
 

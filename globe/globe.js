@@ -286,8 +286,6 @@ DAT.Globe = function(container) {
     point.position.y =  200 * Math.cos(phi);
     point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
 
-
-
     var color = getColor(point.position);
     point.lookAt(mesh.position);
 
