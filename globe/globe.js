@@ -17,7 +17,10 @@ DAT.Globe = function(container) {
 
   getColor = function(position) {
     var c = new THREE.Color();
-    c.setRGB(1, 1, 1);
+    var r = map(position.x, -199, 198, 0, 1 )
+    var g = map(position.y, -199, 198, 0, 1 )
+    var b = map(position.z, -199, 198, 0, 1 )
+    c.setRGB(r, g, b);
     return c;
   };
 
@@ -75,6 +78,9 @@ DAT.Globe = function(container) {
 
   var curZoomSpeed = 0;
   var zoomSpeed = 50;
+  var xPositions = [];
+  var yPositions = [];
+  var zPositions = [];
 
   var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
   var rotation = { x: 0, y: 0 },
@@ -214,6 +220,12 @@ DAT.Globe = function(container) {
       this._baseGeometry = subgeo;
     }
 
+    console.log("xMin ", _.min(xPositions));
+    console.log("xMax ", _.max(xPositions));
+    console.log("yMin ", _.min(yPositions));
+    console.log("yMax ", _.max(yPositions));
+    console.log("zMin ", _.min(zPositions));
+    console.log("zMax ", _.max(zPositions));
   };
 
   function createPoints() {
@@ -226,11 +238,8 @@ DAT.Globe = function(container) {
             }));
       } else {
         if (this._baseGeometry.morphTargets.length < 8) {
-          console.log('t l',this._baseGeometry.morphTargets.length);
           var padding = 8-this._baseGeometry.morphTargets.length;
-          console.log('padding', padding);
           for(var i=0; i<=padding; i++) {
-            console.log('padding',i);
             this._baseGeometry.morphTargets.push({'name': 'morphPadding'+i, vertices: this._baseGeometry.vertices});
           }
         }
@@ -251,6 +260,9 @@ DAT.Globe = function(container) {
     point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
     point.position.y = 200 * Math.cos(phi);
     point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
+    xPositions.push(200 * Math.sin(phi) * Math.cos(theta))
+    yPositions.push( 200 * Math.cos(phi))
+    zPositions.push(200 * Math.sin(phi) * Math.sin(theta))
     var color = getColor(point.position);
     point.lookAt(mesh.position);
 
@@ -278,6 +290,10 @@ DAT.Globe = function(container) {
     targetOnDown.y = target.y;
 
     container.style.cursor = 'move';
+  }
+
+  function map(value, istart,  istop, ostart, ostop){
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
 
   function onMouseMove(event) {
