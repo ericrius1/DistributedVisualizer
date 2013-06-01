@@ -211,7 +211,7 @@ DAT.Globe = function(container, colorFn) {
       lat = data[i];
       lng = data[i + 1];
       color = colorFnWrapper(data,i);
-      size = data[i + 2];
+      size = opts.height;
       size = size*200;
       addPoint(lat, lng, size, color, subgeo);
     }
