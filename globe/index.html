@@ -42,6 +42,7 @@
       var fps = 60;
       var numSecondsBetweenRequests = 3;
       var data;
+      var firstUpdate = true;
 
       var xhrRequest = function(path, isInitialRequest) {
         var xhr = new XMLHttpRequest();
@@ -51,18 +52,16 @@
             globe.addInitialData(data[1], {
               format: 'magnitude',
               name: data[0],
-              animated: true,
+              animated: false,
               belowGlobe: true
             });
             globe.addInitialData(data[1], {
               format: 'magnitude',
               name: data[0],
-              animated: true,
+              animated: false,
               belowGlobe: false
             });
             globe.createInitialPoints();
-            globe.setUpTweening();
-            globe.animate();
           } else {
             globe.addData(data[1], {
               format: 'magnitude',
@@ -78,7 +77,7 @@
             });
 
             globe.createUpdatedPoints();
-            globe.setUpTweening();
+
            }
         }, false);
         xhr.open('GET', path, true);
@@ -88,6 +87,7 @@
 
 
       xhrRequest('initialRequest.json', true);
+      globe.animate();
 
       var animate = function() {
         requestAnimationFrame(animate);
@@ -107,7 +107,6 @@
           if (timeStep > numSteps) {
             timeStep = 0;
           }
-
         }
         throbbingFrameCounter++;
 
@@ -115,6 +114,10 @@
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
+          if(firstUpdate){
+            animate();
+            firstUpdate = false;
+          }
           console.log("shnur");
           requestFrameCounter = 0;
           globe.deletePoints();
@@ -123,8 +126,6 @@
         }
         requestFrameCounter++;
       }
-
-      animate();
     }
 
   </script>
