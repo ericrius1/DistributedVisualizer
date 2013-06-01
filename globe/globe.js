@@ -60,13 +60,13 @@ DAT.Globe = function(container, colorFn) {
         'varying vec3 vNormal;',
         'void main() {',
           'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
-          'gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;',
+          'gl_FragColor = vec4( 0.8, 0.1, 0.8, 1.0 ) * intensity;',
         '}'
       ].join('\n')
     }
   };
 
-  var camera, scene, sceneAtmosphere, renderer, w, h;
+  var camera, scene, sceneAtmosphere, sceneJobs, renderer, w, h;
   var vector, mesh, atmosphere, point;
 
   var overRenderer;
@@ -75,6 +75,8 @@ DAT.Globe = function(container, colorFn) {
 
   var curZoomSpeed = 0;
   var zoomSpeed = 50;
+
+  var jobEmitters = [];
 
   var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
   var rotation = { x: 0, y: 0 },
@@ -269,6 +271,11 @@ DAT.Globe = function(container, colorFn) {
     }
 
     THREE.GeometryUtils.merge(subgeo, point);
+    if(jobEmitters.length < 2){
+         jobEmitters.push(new DAT.JobEmitter(globe, point.position));
+    }
+ 
+
   }
 
   function onMouseDown(event) {
