@@ -40,7 +40,7 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
-      var numSecondsBetweenRequests = 2;
+      var numSecondsBetweenRequests = 0.5;
       var data;
       var firstUpdate = true;
 
@@ -116,7 +116,7 @@
             globe.deletePoints();
           }
           firstUpdate = false;
-        //  numSecondsBetweenRequests +=10;
+          numSecondsBetweenRequests +=10;
           requestFrameCounter = 0;
           
           xhrRequest('updatedRequest.json', false)
