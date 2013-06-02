@@ -26,12 +26,11 @@
       <p id = "statsHeader">Statistics</p>
 
       <div id = "stats">
-        <p>Total Solutions:<span id = "numSolutions"></span></p>
-        <p>Total Contributors:</p>
-        <p>Total Jobs:</p>
-        <p>Total CPU Cycles:</p>
-        <p>Your Solutions:</p>
-        <p>Your Completed Jobs:</p>
+        <p>Total Solutions: <span id = "solutions"></span></p>
+        <p>Total Contributors: <span id = "contributors"></span></p>
+        <p>Total Jobs: <span id = "jobs"></span> </p>
+        <p>Your completed solutions: <span id = "userSolutions"></span></p>
+        <p>Your completed jobs: <span id = "userJobs"></span></p>
       </div>
   </div>
 
@@ -120,7 +119,11 @@
       }
 
       myRootRef.on('value', function(snapshot) {
-        debugger;
+        $('#solutions').text(snapshot.val().solutions);
+        $('#contributors').text(snapshot.val().contributors);
+        $('#jobs').text(snapshot.val().jobs);
+        $('#userSolutions').text(snapshot.val().userSolutions);
+        $('#userJobs').text(snapshot.val().userSolutions);
 
       });
 
