@@ -117,7 +117,9 @@ DAT.Globe = function(container) {
 
     container.style.color = '#fff';
     container.style.font = '13px/20px Arial, sans-serif';
-    container.style.width = "60%";
+
+    //ADJUST BASED ON SIDEBAR WIDTH
+    container.style.width = "50%";
 
 
     var shader, uniforms, material;
