@@ -73,7 +73,7 @@ DAT.Globe = function(container) {
   };
 
   var camera, scene, sceneAtmosphere, renderer, w, h;
-  var vector, mesh, atmosphere, point;
+  var vector, mesh, atmosphere, point, subgeo;
 
   var overRenderer;
 
@@ -125,6 +125,7 @@ DAT.Globe = function(container) {
     sceneAtmosphere = new THREE.Scene();
 
     var geometry = new THREE.SphereGeometry(200, 40, 30);
+
 
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -213,9 +214,10 @@ DAT.Globe = function(container) {
       throw ('error: format not supported: ' + opts.format);
     }
 
-    var subgeo = new THREE.Geometry();
+    subgeo = new THREE.Geometry();
     var belowGlobe = opts.belowGlobe;
-    for (i = 0; i < data.length; i += step) {
+    var length = data.length
+    for (i = 0; i < length; i += step) {
       lat = data[i];
       lng = data[i + 1];
       size = belowGlobe === true ? 0.01 : data[i + 2];
@@ -257,9 +259,10 @@ DAT.Globe = function(container) {
       }
       opts.name = opts.name || 'morphTarget' + this._morphTargetId;
     }
-    var subgeo = new THREE.Geometry();
+    subgeo = new THREE.Geometry();
     var belowGlobe = opts.belowGlobe;
-    for (i = 0; i < data.length; i += step) {
+    var length = data.length
+    for (i = 0; i <length; i += step) {
       lat = data[i];
       lng = data[i + 1];
       size = belowGlobe === true ? 0.02 : data[i + 2];
@@ -318,9 +321,11 @@ DAT.Globe = function(container) {
   }
 
   function deletePoints() {
-    console.log("bdur");
+    debugger;
     scene.remove(this.dynamicPoints)
-    scene.remove(this._baseGeometry);
+    this._baseGeometry.dispose();
+    this._baseGeometry = undefined;
+
 
   }
 

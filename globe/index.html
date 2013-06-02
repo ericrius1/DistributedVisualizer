@@ -40,7 +40,7 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
-      var numSecondsBetweenRequests = 3;
+      var numSecondsBetweenRequests = 2;
       var data;
       var firstUpdate = true;
 
@@ -112,9 +112,13 @@
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
+          if(!firstUpdate){
+            globe.deletePoints();
+          }
           firstUpdate = false;
+        //  numSecondsBetweenRequests +=10;
           requestFrameCounter = 0;
-          globe.deletePoints();
+          
           xhrRequest('updatedRequest.json', false)
 
         }
