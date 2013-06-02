@@ -49,22 +49,21 @@
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
           if (isInitialRequest) {
-            globe.addInitialData(data[1], {
+            globe.initializeData(data[1], {
               format: 'magnitude',
               name: data[0],
               animated: false,
               belowGlobe: true
             });
-
             globe.createInitialPoints();
           } else {
-            globe.addData(data[0][1], {
+            globe.updateData(data[0][1], {
               format: 'magnitude',
               name: data[0][0],
               animated: true,
               belowGlobe: true
             });
-            globe.addData(data[1][1], {
+            globe.updateData(data[1][1], {
               format: 'magnitude',
               name: data[1][0],
               animated: true,
@@ -114,7 +113,6 @@
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
           firstUpdate = false;
-          console.log("shnur");
           requestFrameCounter = 0;
           globe.deletePoints();
           xhrRequest('updatedRequest.json', false)

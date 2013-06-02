@@ -200,7 +200,7 @@ DAT.Globe = function(container) {
     }, false);
   }
 
-  addInitialData = function(data, opts) {
+  initializeData = function(data, opts) {
     var lat, lng, size, color, i, step
 
     opts.animated = opts.animated || false;
@@ -228,7 +228,7 @@ DAT.Globe = function(container) {
 
   }
 
-  addData = function(data, opts) {
+  updateData = function(data, opts) {
     var lat, lng, size, color, i, step
 
       opts.animated = opts.animated || false;
@@ -479,10 +479,10 @@ DAT.Globe = function(container) {
     this._time = t;
   });
 
-  this.addData = addData;
+  this.updateData = updateData;
   this.createUpdatedPoints = createUpdatedPoints;
   this.deletePoints = deletePoints;
-  this.addInitialData = addInitialData;
+  this.initializeData = initializeData;
   this.createInitialPoints = createInitialPoints;
   this.renderer = renderer;
   this.scene = scene;
