@@ -48,10 +48,12 @@
   <script src="http://underscorejs.org/underscore-min.js"></script>
   <script src="third-party/jquery.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
   <script src="globe.js"></script>
   <script src="sidebar.js"></script>
   <script>
   var sideBar = new DAT.SideBar();
+  var myRootRef = new Firebase('26queens.firebaseIO.com/');
 
     if (System.support.webgl === false) {
 
@@ -76,6 +78,11 @@
       var numSecondsBetweenRequests = 0.5;
       var data;
       var firstUpdate = true;
+
+      var updateFireBase = function () {
+        myRootRef.child(clientID).update({boards: localBoards, solutions: localsols,  operations: localOps,  jobs: localJobs});
+      };
+
 
       var xhrRequest = function(path, isInitialRequest) {
         var xhr = new XMLHttpRequest();
@@ -113,6 +120,10 @@
 
       }
 
+      myRootRef.on('value', function(snapshot) {
+        alert('fred’s first name is ' + snapshot.val());
+      });
+
 
       xhrRequest('initialRequest.json', true);
       globe.animate();
@@ -143,6 +154,16 @@
         throbbingFrameCounter++;
 
       }
+
+      var authClient = new FirebaseAuthClient(myRootRef, function(error, user) {
+        if (!error) {
+          console.log(authClient);
+        }
+      });
+
+      var timAuth = function () {
+        authClient.login('facebook');
+      };
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
