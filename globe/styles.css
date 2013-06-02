@@ -45,6 +45,15 @@
         right: 0;
       }
 
+      
+      a:link { 
+        color: #CC4CCC
+      }
+
+      a:visited { 
+          color:#CC4CCC
+      }
+
       #queen {
         position:absolute;
         right:40%;
