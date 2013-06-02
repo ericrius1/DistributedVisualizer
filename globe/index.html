@@ -62,13 +62,13 @@
           } else {
             globe.updateData(constantData[1], {
               format: 'magnitude',
-              name: data[0],
+              name: constantData[0],
               animated: true,
               belowGlobe: true
             });
-            globe.updateData(data[1][1], {
+            globe.updateData(data[1], {
               format: 'magnitude',
-              name: data[1][0],
+              name: data[0],
               animated: true,
               belowGlobe: false
             });
