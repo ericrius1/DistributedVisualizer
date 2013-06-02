@@ -13,6 +13,18 @@
         height: 100%;
       }
 
+      #info {
+
+        position: absolute;
+        left: 20px;
+        top: 63px;
+
+        background-color: rgba(0,0,0,0.2);
+
+        border-top: 1px solid rgba(255,255,255,0.4);
+        padding: 10px;
+      }
+
 
       #title {
         position: absolute;
@@ -39,6 +51,19 @@
         right:40%;
         bottom: 0;
         opacity: 0.15;
+
+      }
+
+      #statsHeader {
+        position: absolute;
+        bottom: 0;
+        font: 20px Georgia;
+        left : 50%;
+      }
+
+      circle {
+        fill: none;
+        stroke-width: 1.5px;
 
       }
 
