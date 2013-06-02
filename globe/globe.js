@@ -25,52 +25,50 @@ DAT.Globe = function(container) {
   };
 
   var Shaders = {
-    'earth': {
+    'earth' : {
       uniforms: {
-        'texture': {
-          type: 't',
-          value: null
-        }
+        'texture': { type: 't', value: null }
       },
       vertexShader: [
-          'varying vec3 vNormal;',
-          'varying vec2 vUv;',
-          'void main() {',
+        'varying vec3 vNormal;',
+        'varying vec2 vUv;',
+        'void main() {',
           'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
           'vNormal = normalize( normalMatrix * normal );',
           'vUv = uv;',
-          '}'
+        '}'
       ].join('\n'),
       fragmentShader: [
-          'uniform sampler2D texture;',
-          'varying vec3 vNormal;',
-          'varying vec2 vUv;',
-          'void main() {',
+        'uniform sampler2D texture;',
+        'varying vec3 vNormal;',
+        'varying vec2 vUv;',
+        'void main() {',
           'vec3 diffuse = texture2D( texture, vUv ).xyz;',
           'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
           'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
           'gl_FragColor = vec4( diffuse + atmosphere, 1.0 );',
-          '}'
+        '}'
       ].join('\n')
     },
-    'atmosphere': {
-      uniforms: {},
+    'atmosphere' : {
+      uniforms: {'texture': { type: 't', value: null }},
       vertexShader: [
-          'varying vec3 vNormal;',
-          'void main() {',
+        'varying vec3 vNormal;',
+        'void main() {',
           'vNormal = normalize( normalMatrix * normal );',
-          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-          '}'
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.00 );',
+        '}'
       ].join('\n'),
       fragmentShader: [
-          'varying vec3 vNormal;',
-          'void main() {',
+        'varying vec3 vNormal;',
+        'void main() {',
           'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
-          'gl_FragColor = vec4( 0.8, 0.1, 1.0, 0.8 ) * intensity;',
-          '}'
+          'gl_FragColor = vec4( 0.8, 0.3, 0.8, 1.0 ) * intensity ;',
+        '}'
       ].join('\n')
     }
   };
+
 
   var camera, scene, sceneAtmosphere, renderer, w, h;
   var vector, mesh, atmosphere, point, subgeo;
@@ -266,7 +264,7 @@ DAT.Globe = function(container) {
     for (i = 0; i < length; i += step) {
       lat = data[i];
       lng = data[i + 1];
-      size = belowGlobe === true ? 0.02 : data[i + 2];
+      size = belowGlobe === true ? 0.01 : data[i + 2];
 
       size = size * 200
       addPoint(lat, lng, size, subgeo);
@@ -435,6 +433,8 @@ DAT.Globe = function(container) {
   }
 
   function render() {
+    renderer.clear();
+    renderer.render(sceneAtmosphere, camera);
     zoom(curZoomSpeed);
 
     rotation.x += (target.x - rotation.x) * 0.1;
@@ -448,10 +448,11 @@ DAT.Globe = function(container) {
     camera.lookAt(scene.position);
 
     vector.copy(camera.position);
-
-    renderer.clear();
+    renderer.clear( false, true, false );
     renderer.render(scene, camera);
-    renderer.render(sceneAtmosphere, camera);
+
+
+  
   }
 
   init();

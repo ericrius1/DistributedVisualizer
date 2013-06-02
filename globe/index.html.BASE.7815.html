@@ -40,8 +40,7 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
-
-      var numSecondsBetweenRequests = 0.5;
+      var numSecondsBetweenRequests = 2;
       var data;
       var firstUpdate = true;
 
@@ -73,7 +72,7 @@
 
             globe.createUpdatedPoints();
 
-          }
+           }
         }, false);
         xhr.open('GET', path, true);
         xhr.send(null);
@@ -86,13 +85,13 @@
 
       var animate = function() {
         requestAnimationFrame(animate);
-        if (!firstUpdate) {
+        if(!firstUpdate){
           handleThrobbingAnimation();
           TWEEN.update();
         }
 
         handleRequestTiming();
-
+      
       }
 
       var handleThrobbingAnimation = function() {
@@ -113,22 +112,20 @@
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
-          if (!firstUpdate) {
+          if(!firstUpdate){
             globe.deletePoints();
           }
           firstUpdate = false;
-
-          numSecondsBetweenRequests +=10;
-
+        //  numSecondsBetweenRequests +=10;
           requestFrameCounter = 0;
-
+          
           xhrRequest('updatedRequest.json', false)
 
         }
         requestFrameCounter++;
       }
 
-      animate();
+     animate();
 
     }
 
