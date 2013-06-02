@@ -155,15 +155,15 @@
 
       }
 
-      var authClient = new FirebaseAuthClient(myRootRef, function(error, user) {
-        if (!error) {
-          console.log(authClient);
-        }
-      });
+      // var authClient = new FirebaseAuthClient(myRootRef, function(error, user) {
+      //   if (!error) {
+      //     console.log(authClient);
+      //   }
+      // });
 
-      var timAuth = function () {
-        authClient.login('facebook');
-      };
+      // var timAuth = function () {
+      //   authClient.login('facebook');
+      // };
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
