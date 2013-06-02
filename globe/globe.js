@@ -457,7 +457,6 @@ DAT.Globe = function(container) {
 
   this.__defineSetter__('time', function(t) {
     var validMorphs = [];
-    debugger;
     var morphDict = this.dynamicPoints.morphTargetDictionary;
     for (var k in morphDict) {
       if (k.indexOf('morphPadding') < 0) {

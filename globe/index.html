@@ -55,23 +55,18 @@
               animated: false,
               belowGlobe: true
             });
-            globe.addInitialData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: false,
-              belowGlobe: false
-            });
+
             globe.createInitialPoints();
           } else {
-            globe.addData(data[1], {
+            globe.addData(data[0][1], {
               format: 'magnitude',
-              name: data[0],
+              name: data[0][0],
               animated: true,
               belowGlobe: true
             });
-            globe.addData(data[1], {
+            globe.addData(data[1][1], {
               format: 'magnitude',
-              name: data[0],
+              name: data[1][0],
               animated: true,
               belowGlobe: false
             });
@@ -91,13 +86,17 @@
 
       var animate = function() {
         requestAnimationFrame(animate);
-        TWEEN.update();
-        handleThrobbingAnimation();
+        if(!firstUpdate){
+          handleThrobbingAnimation();
+          TWEEN.update();
+        }
+
         handleRequestTiming();
+      
       }
 
       var handleThrobbingAnimation = function() {
-        if (throbbingFrameCounter === (10)) {
+        if (throbbingFrameCounter === (20)) {
           //tween to new height every second
           new TWEEN.Tween(globe).to({
             time: timeStep / numSteps
@@ -114,10 +113,7 @@
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
-          if(firstUpdate){
-            animate();
-            firstUpdate = false;
-          }
+          firstUpdate = false;
           console.log("shnur");
           requestFrameCounter = 0;
           globe.deletePoints();
@@ -126,6 +122,9 @@
         }
         requestFrameCounter++;
       }
+
+     animate();
+
     }
 
   </script>
