@@ -23,6 +23,7 @@
   <script src="third-party/three.min.js"></script>
   <script src="third-party/tween.min.js"></script>
   <script src="http://underscorejs.org/underscore-min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="globe.js"></script>
   <script>
 
@@ -46,7 +47,7 @@
       var fps = 60;
       var constantData;
 
-      var numSecondsBetweenRequests = 3;
+      var numSecondsBetweenRequests = 0.5;
       var data;
       var firstUpdate = true;
 
@@ -124,7 +125,7 @@
           }
           firstUpdate = false;
 
-          //numSecondsBetweenRequests +=10;
+          numSecondsBetweenRequests +=10;
 
           requestFrameCounter = 0;
 

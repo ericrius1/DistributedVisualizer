@@ -25,46 +25,54 @@ DAT.Globe = function(container) {
   };
 
   var Shaders = {
-    'earth' : {
+    'earth': {
       uniforms: {
-        'texture': { type: 't', value: null }
+        'texture': {
+          type: 't',
+          value: null
+        }
       },
       vertexShader: [
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
           'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
           'vNormal = normalize( normalMatrix * normal );',
           'vUv = uv;',
-        '}'
+          '}'
       ].join('\n'),
       fragmentShader: [
-        'uniform sampler2D texture;',
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
+          'uniform sampler2D texture;',
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
           'vec3 diffuse = texture2D( texture, vUv ).xyz;',
           'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
           'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
           'gl_FragColor = vec4( diffuse + atmosphere, 1.0 );',
-        '}'
+          '}'
       ].join('\n')
     },
-    'atmosphere' : {
-      uniforms: {'texture': { type: 't', value: null }},
+    'atmosphere': {
+      uniforms: {
+        'texture': {
+          type: 't',
+          value: null
+        }
+      },
       vertexShader: [
-        'varying vec3 vNormal;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'void main() {',
           'vNormal = normalize( normalMatrix * normal );',
           'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 0.98 );',
-        '}'
+          '}'
       ].join('\n'),
       fragmentShader: [
-        'varying vec3 vNormal;',
-        'void main() {',
+          'varying vec3 vNormal;',
+          'void main() {',
           'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
           'gl_FragColor = vec4( 0.8, 0.3, 0.8, 1.0 ) * intensity ;',
-        '}'
+          '}'
       ].join('\n')
     }
   };
@@ -109,6 +117,8 @@ DAT.Globe = function(container) {
 
     container.style.color = '#fff';
     container.style.font = '13px/20px Arial, sans-serif';
+    container.style.width = "60%";
+
 
     var shader, uniforms, material;
     w = container.offsetWidth || window.innerWidth;
@@ -416,9 +426,13 @@ DAT.Globe = function(container) {
   }
 
   function onWindowResize(event) {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    debugger;
+    w = container.offsetWidth || window.innerWidth;
+    h = container.offsetHeight || window.innerHeight;
+
+    camera.aspect = w/h;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(w, h);
   }
 
   function zoom(delta) {
@@ -439,7 +453,7 @@ DAT.Globe = function(container) {
 
     rotation.x += (target.x - rotation.x) * 0.1;
     rotation.y += (target.y - rotation.y) * 0.1;
-    target.x-=0.003
+    target.x -= 0.003
     distance += (distanceTarget - distance) * 0.3;
 
     camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
@@ -448,11 +462,10 @@ DAT.Globe = function(container) {
     camera.lookAt(scene.position);
 
     vector.copy(camera.position);
-    renderer.clear( false, true, false );
+    renderer.clear(false, true, false);
     renderer.render(scene, camera);
 
 
-  
   }
 
   init();
