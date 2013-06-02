@@ -30,8 +30,16 @@
         top:0;
         bottom:0;
         width:40%;
-        background: blue;
+        background: black;
         right: 0;
+      }
+
+      #queen {
+        position:absolute;
+        right:40%;
+        bottom: 0;
+        opacity: 0.15;
+
       }
 
      
