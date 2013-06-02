@@ -178,7 +178,7 @@ DAT.Globe = function(container) {
       antialias: true
     });
     renderer.autoClear = false;
-    renderer.setClearColorHex(0x000000, 0.0);
+    renderer.setClearColor(0x000000, 0.0);
     renderer.setSize(w, h);
 
     renderer.domElement.style.position = 'absolute';
@@ -204,7 +204,7 @@ DAT.Globe = function(container) {
   initializeData = function(data, opts) {
     var lat, lng, size, color, i, step
 
-    opts.animated = opts.animated || false;
+      opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
     opts.format = opts.format || 'magnitude'; // other option is 'legend'
     console.log(opts.format);
@@ -225,15 +225,15 @@ DAT.Globe = function(container) {
       size = size * 200
       addPoint(lat, lng, size, subgeo);
     }
-   
-      this._constantGeometry = subgeo;
+
+    this._constantGeometry = subgeo;
 
   }
 
   updateData = function(data, opts) {
-    var lat, lng, size, color, i, step
+    var lat, lng, size, color, i, step;
 
-      opts.animated = opts.animated || false;
+    opts.animated = opts.animated || false;
     this.is_animated = opts.animated;
     opts.format = opts.format || 'magnitude'; // other option is 'legend'
     if (opts.format === 'magnitude') {
@@ -245,7 +245,8 @@ DAT.Globe = function(container) {
     if (opts.animated) {
       if (this._baseGeometry === undefined) {
         this._baseGeometry = new THREE.Geometry();
-        for (i = 0; i < data.length; i += step) {
+        var length = data.length
+        for (i = 0; i < length; i += step) {
           lat = data[i];
           lng = data[i + 1];
           size = 0;
@@ -262,7 +263,7 @@ DAT.Globe = function(container) {
     subgeo = new THREE.Geometry();
     var belowGlobe = opts.belowGlobe;
     var length = data.length
-    for (i = 0; i <length; i += step) {
+    for (i = 0; i < length; i += step) {
       lat = data[i];
       lng = data[i + 1];
       size = belowGlobe === true ? 0.02 : data[i + 2];
@@ -310,18 +311,17 @@ DAT.Globe = function(container) {
 
   function createInitialPoints() {
     if (this._constantGeometry !== undefined) {
-        this.constantPoints = new THREE.Mesh(this._constantGeometry, new THREE.MeshBasicMaterial({
-          color: 0xffffff,
-          vertexColors: THREE.FaceColors,
-          morphTargets: false
-        }));
+      this.constantPoints = new THREE.Mesh(this._constantGeometry, new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        vertexColors: THREE.FaceColors,
+        morphTargets: false
+      }));
       scene.add(this.constantPoints);
     }
 
   }
 
   function deletePoints() {
-    debugger;
     scene.remove(this.dynamicPoints)
     this._baseGeometry.dispose();
     this._baseGeometry = undefined;
@@ -439,6 +439,7 @@ DAT.Globe = function(container) {
 
     rotation.x += (target.x - rotation.x) * 0.1;
     rotation.y += (target.y - rotation.y) * 0.1;
+    target.y+=0.001
     distance += (distanceTarget - distance) * 0.3;
 
     camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
