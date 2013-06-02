@@ -29,7 +29,6 @@
       #title {
         position: absolute;
         top: 20px;
-        width: 270px;
         left: 20px;
         background-color: rgba(0,0,0,0.2);
         border-radius: 3px;
@@ -55,10 +54,12 @@
       }
 
       #statsHeader {
-        position: absolute;
-        bottom: 0;
         font: 20px Georgia;
-        left : 50%;
+
+      }
+
+      #stats {
+        border-top: 1px solid rgba(255,255,255,0.4);
       }
 
       circle {
