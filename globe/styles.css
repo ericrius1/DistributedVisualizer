@@ -25,5 +25,20 @@
         padding: 10px;
       }
 
+      #webglContainer {
+
+      }
+
+      #statsColumn {
+        position:absolute;
+        top:0;
+        bottom:0;
+        width:10%;
+        background: blue;
+        right: 0;
+      }
+
+     
+
 
     </style>

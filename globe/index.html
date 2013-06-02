@@ -8,11 +8,15 @@
   </head>
   <body>
 
-  <div id="container"></div>
+  <div id="webglContainer"></div>
 
 
   <div id="title">
     Distributed Computing
+  </div>
+
+  <div id = "statsColumn">
+    Yo!
   </div>
 
   <script src="third-party/system.min.js"></script>
@@ -32,8 +36,8 @@
 
     } else {
 
-      var container = document.getElementById('container');
-      var globe = new DAT.Globe(container);
+      var webglContainer = document.getElementById('webglContainer');
+      var globe = new DAT.Globe(webglContainer);
       var numSteps = 2;
       var throbbingFrameCounter = 0;
       var requestFrameCounter = 0;
@@ -42,7 +46,7 @@
       var fps = 60;
       var constantData;
 
-      var numSecondsBetweenRequests = 0.5;
+      var numSecondsBetweenRequests = 3;
       var data;
       var firstUpdate = true;
 
@@ -120,7 +124,7 @@
           }
           firstUpdate = false;
 
-          numSecondsBetweenRequests +=10;
+          //numSecondsBetweenRequests +=10;
 
           requestFrameCounter = 0;
 
