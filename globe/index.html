@@ -53,7 +53,7 @@
   <script src="sidebar.js"></script>
   <script>
   var sideBar = new DAT.SideBar();
-  var myRootRef = new Firebase('26queens.firebaseIO.com/');
+  var myRootRef = new Firebase('testqueens.firebaseIO.com/');
 
     if (System.support.webgl === false) {
 
@@ -121,7 +121,7 @@
       }
 
       myRootRef.on('value', function(snapshot) {
-        alert('fred’s first name is ' + snapshot.val());
+
       });
 
 

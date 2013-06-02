@@ -427,7 +427,6 @@ DAT.Globe = function(container) {
   }
 
   function onWindowResize(event) {
-    debugger;
     w = container.offsetWidth || window.innerWidth;
     h = container.offsetHeight || window.innerHeight;
 
