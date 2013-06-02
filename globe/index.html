@@ -40,6 +40,7 @@
       var timeStep = 0;
       var initialData;
       var fps = 60;
+      var constantData;
 
       var numSecondsBetweenRequests = 0.5;
       var data;
@@ -50,7 +51,8 @@
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
           if (isInitialRequest) {
-            globe.initializeData(data[1], {
+            constantData = data;
+            globe.initializeData(constantData[1], {
               format: 'magnitude',
               name: data[0],
               animated: false,
@@ -58,9 +60,9 @@
             });
             globe.createInitialPoints();
           } else {
-            globe.updateData(data[0][1], {
+            globe.updateData(constantData[1], {
               format: 'magnitude',
-              name: data[0][0],
+              name: data[0],
               animated: true,
               belowGlobe: true
             });
