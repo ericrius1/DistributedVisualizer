@@ -15,7 +15,7 @@
     Distributed Computing
   </div>
 
-  <div id = "statsColumn">
+  <div id = "statsSideBar">
     <img id = "queen" src = "images/queen.png"/>
   </div>
 
@@ -25,7 +25,9 @@
   <script src="http://underscorejs.org/underscore-min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="globe.js"></script>
+  <script src="sidebar.js"></script>
   <script>
+  var sideBar = new DAT.SideBar();
 
     if (System.support.webgl === false) {
 
@@ -37,107 +39,107 @@
 
     } else {
 
-      var webglContainer = document.getElementById('webglContainer');
-      var globe = new DAT.Globe(webglContainer);
-      var numSteps = 2;
-      var throbbingFrameCounter = 0;
-      var requestFrameCounter = 0;
-      var timeStep = 0;
-      var initialData;
-      var fps = 60;
-      var constantData;
+    //   var webglContainer = document.getElementById('webglContainer');
+    //   var globe = new DAT.Globe(webglContainer);
+    //   var numSteps = 2;
+    //   var throbbingFrameCounter = 0;
+    //   var requestFrameCounter = 0;
+    //   var timeStep = 0;
+    //   var initialData;
+    //   var fps = 60;
+    //   var constantData;
 
-      var numSecondsBetweenRequests = 0.5;
-      var data;
-      var firstUpdate = true;
+    //   var numSecondsBetweenRequests = 0.5;
+    //   var data;
+    //   var firstUpdate = true;
 
-      var xhrRequest = function(path, isInitialRequest) {
-        var xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', function(e) {
-          var data = JSON.parse(e.target.responseText);
-          if (isInitialRequest) {
-            constantData = data;
-            globe.initializeData(constantData[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: false,
-              belowGlobe: true
-            });
-            globe.createInitialPoints();
-          } else {
-            globe.updateData(constantData[1], {
-              format: 'magnitude',
-              name: constantData[0],
-              animated: true,
-              belowGlobe: true
-            });
-            globe.updateData(data[1], {
-              format: 'magnitude',
-              name: data[0],
-              animated: true,
-              belowGlobe: false
-            });
+    //   var xhrRequest = function(path, isInitialRequest) {
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.addEventListener('load', function(e) {
+    //       var data = JSON.parse(e.target.responseText);
+    //       if (isInitialRequest) {
+    //         constantData = data;
+    //         globe.initializeData(constantData[1], {
+    //           format: 'magnitude',
+    //           name: data[0],
+    //           animated: false,
+    //           belowGlobe: true
+    //         });
+    //         globe.createInitialPoints();
+    //       } else {
+    //         globe.updateData(constantData[1], {
+    //           format: 'magnitude',
+    //           name: constantData[0],
+    //           animated: true,
+    //           belowGlobe: true
+    //         });
+    //         globe.updateData(data[1], {
+    //           format: 'magnitude',
+    //           name: data[0],
+    //           animated: true,
+    //           belowGlobe: false
+    //         });
 
-            globe.createUpdatedPoints();
+    //         //globe.createUpdatedPoints();
 
-          }
-        }, false);
-        xhr.open('GET', path, true);
-        xhr.send(null);
+    //       }
+    //     }, false);
+    //     xhr.open('GET', path, true);
+    //     xhr.send(null);
 
-      }
+    //   }
 
 
-      xhrRequest('initialRequest.json', true);
-      globe.animate();
+    //   xhrRequest('initialRequest.json', true);
+    //   //globe.animate();
 
-      var animate = function() {
-        requestAnimationFrame(animate);
-        if (!firstUpdate) {
-          handleThrobbingAnimation();
-          TWEEN.update();
-        }
+    //   var animate = function() {
+    //     requestAnimationFrame(animate);
+    //     if (!firstUpdate) {
+    //       handleThrobbingAnimation();
+    //       TWEEN.update();
+    //     }
 
-        handleRequestTiming();
+    //     handleRequestTiming();
 
-      }
+    //   }
 
-      var handleThrobbingAnimation = function() {
-        if (throbbingFrameCounter === (20)) {
-          //tween to new height every second
-          new TWEEN.Tween(globe).to({
-            time: timeStep / numSteps
-          }, 500).easing(TWEEN.Easing.Cubic.Out).start();
-          timeStep++;
-          throbbingFrameCounter = 0;
-          if (timeStep > numSteps) {
-            timeStep = 0;
-          }
-        }
-        throbbingFrameCounter++;
+    //   var handleThrobbingAnimation = function() {
+    //     if (throbbingFrameCounter === (20)) {
+    //       //tween to new height every second
+    //       new TWEEN.Tween(globe).to({
+    //         time: timeStep / numSteps
+    //       }, 500).easing(TWEEN.Easing.Cubic.Out).start();
+    //       timeStep++;
+    //       throbbingFrameCounter = 0;
+    //       if (timeStep > numSteps) {
+    //         timeStep = 0;
+    //       }
+    //     }
+    //     throbbingFrameCounter++;
 
-      }
+    //   }
 
-      var handleRequestTiming = function() {
-        if (requestFrameCounter === fps * numSecondsBetweenRequests) {
-          if (!firstUpdate) {
-            globe.deletePoints();
-          }
-          firstUpdate = false;
+    //   var handleRequestTiming = function() {
+    //     if (requestFrameCounter === fps * numSecondsBetweenRequests) {
+    //       if (!firstUpdate) {
+    //         globe.deletePoints();
+    //       }
+    //       firstUpdate = false;
 
-          numSecondsBetweenRequests +=10;
+    //       numSecondsBetweenRequests +=10;
 
-          requestFrameCounter = 0;
+    //       requestFrameCounter = 0;
 
-          xhrRequest('updatedRequest.json', false)
+    //       xhrRequest('updatedRequest.json', false)
 
-        }
-        requestFrameCounter++;
-      }
+    //     }
+    //     requestFrameCounter++;
+    //   }
 
-      animate();
+    //   animate();
 
-    }
+     }
 
   </script>
 

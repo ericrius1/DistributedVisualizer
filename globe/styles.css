@@ -25,11 +25,11 @@
         padding: 10px;
       }
 
-      #statsColumn {
+      #statsSideBar {
         position:absolute;
         top:0;
         bottom:0;
-        width:40%;
+        width:20%;
         background: black;
         right: 0;
       }
