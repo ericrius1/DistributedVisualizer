@@ -56,7 +56,7 @@ DAT.Globe = function(container) {
         'varying vec3 vNormal;',
         'void main() {',
           'vNormal = normalize( normalMatrix * normal );',
-          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.00 );',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 0.98 );',
         '}'
       ].join('\n'),
       fragmentShader: [
@@ -439,7 +439,7 @@ DAT.Globe = function(container) {
 
     rotation.x += (target.x - rotation.x) * 0.1;
     rotation.y += (target.y - rotation.y) * 0.1;
-    target.y+=0.001
+    target.x-=0.003
     distance += (distanceTarget - distance) * 0.3;
 
     camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
