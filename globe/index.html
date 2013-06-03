@@ -86,6 +86,7 @@
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
+          //get throbbing slight
           if (isInitialRequest) {
             constantData = data;
             globe.initializeData(constantData[1], {
