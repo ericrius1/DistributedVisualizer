@@ -12,7 +12,7 @@
 
   <div id = "statsSideBar">
     <img id = "queen" src = "images/queen.png"/>
-    <span id ="timer"></span>
+    <span id ="countdown"></span>
     <div id = "info">
       <p>Welcome to SuperComputer, a distributed computing system built on <a href="http://nodejs.org/" target="_blank">
         Node.js </a></p>
@@ -43,142 +43,140 @@
   <script src="third-party/tween.min.js"></script>
   <script src="http://underscorejs.org/underscore-min.js"></script>
   <script src="third-party/jquery.min.js"></script>
-  <script src="https://raw.github.com/timrwood/moment/2.0.0/min/moment.min.js"></script>
+  <script type = "text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
   <script src="globe.js"></script>
   <script src="sidebar.js"></script>
   <script>
-  var sideBar = new DAT.SideBar();
-  var myRootRef = new Firebase('testqueens.firebaseIO.com/');
+  $(document).ready(function(){
+    var sideBar = new DAT.SideBar();
+    var myRootRef = new Firebase('testqueens.firebaseIO.com/');
 
-  if (System.support.webgl === false) {
+    if (System.support.webgl === false) {
 
-    var message = document.createElement('div');
-    message.style.cssText = 'font-family:monospace;font-size:13px;text-align:center;color:#fff;background:#333;padding:1em;width:540px;margin:30em auto 0';
-    message.innerHTML = 'Either your graphics card or your browser does not support WebGL.<br /><a href="http://www.khronos.org/webgl/wiki_1_15/index.php/Getting_a_WebGL_Implementation">View a list</a> of WebGL compatible browsers.';
-    document.body.appendChild(message);
-    document.body.style.background = '#000000';
+      var message = document.createElement('div');
+      message.style.cssText = 'font-family:monospace;font-size:13px;text-align:center;color:#fff;background:#333;padding:1em;width:540px;margin:30em auto 0';
+      message.innerHTML = 'Either your graphics card or your browser does not support WebGL.<br /><a href="http://www.khronos.org/webgl/wiki_1_15/index.php/Getting_a_WebGL_Implementation">View a list</a> of WebGL compatible browsers.';
+      document.body.appendChild(message);
+      document.body.style.background = '#000000';
 
-  } else {
+    } else {
 
-    var webglContainer = document.getElementById('webglContainer');
-    var globe = new DAT.Globe(webglContainer);
-    var numSteps = 2;
-    var throbbingFrameCounter = 0;
-    var requestFrameCounter = 0;
-    var timeStep = 0;
-    var initialData;
-    var fps = 60;
-    var constantData;
+      var webglContainer = document.getElementById('webglContainer');
+      var globe = new DAT.Globe(webglContainer);
+      var numSteps = 2;
+      var throbbingFrameCounter = 0;
+      var requestFrameCounter = 0;
+      var timeStep = 0;
+      var initialData;
+      var fps = 60;
+      var constantData;
 
-    var numSecondsBetweenRequests = 0.5;
-    var data;
-    var firstUpdate = true;
+      var numSecondsBetweenRequests = 0.5;
+      var data;
+      var firstUpdate = true;
 
-    var updateFireBase = function() {
-      myRootRef.child(clientID).update({
-        boards: localBoards,
-        solutions: localsols,
-        operations: localOps,
-        jobs: localJobs
+      var updateFireBase = function() {
+        myRootRef.child(clientID).update({
+          boards: localBoards,
+          solutions: localsols,
+          operations: localOps,
+          jobs: localJobs
+        });
+      };
+
+      var xhrRequest = function(path, isInitialRequest) {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function(e) {
+          var data = JSON.parse(e.target.responseText);
+
+          globe.updateData(data[1], {
+
+            format: 'magnitude',
+            name: data[0],
+            animated: true,
+            belowGlobe: true
+          });
+          globe.updateData(data[1], {
+            format: 'magnitude',
+            name: data[0],
+            animated: true,
+            belowGlobe: false,
+            height: .03
+          });
+
+          globe.createUpdatedPoints();
+
+
+        }, false);
+        xhr.open('GET', path, true);
+        xhr.send(null);
+
+      }
+
+      myRootRef.on('value', function(snapshot) {
+        $('#solutions').text(snapshot.val().solutions);
+        $('#contributors').text(snapshot.val().contributors);
+        $('#jobs').text(snapshot.val().jobs);
+        $('#userSolutions').text(snapshot.val().userSolutions);
+        $('#userJobs').text(snapshot.val().userSolutions);
+
       });
-    };
 
-    var xhrRequest = function(path, isInitialRequest) {
-      var xhr = new XMLHttpRequest();
-      xhr.addEventListener('load', function(e) {
-        var data = JSON.parse(e.target.responseText);
+      xhrRequest('initialRequest.json', true);
+      globe.animate();
 
-        globe.updateData(data[1], {
-
-          format: 'magnitude',
-          name: data[0],
-          animated: true,
-          belowGlobe: true
-        });
-        globe.updateData(data[1], {
-          format: 'magnitude',
-          name: data[0],
-          animated: true,
-          belowGlobe: false,
-          height: .03
-        });
-
-        globe.createUpdatedPoints();
-
-
-      }, false);
-      xhr.open('GET', path, true);
-      xhr.send(null);
-
-    }
-
-    myRootRef.on('value', function(snapshot) {
-      $('#solutions').text(snapshot.val().solutions);
-      $('#contributors').text(snapshot.val().contributors);
-      $('#jobs').text(snapshot.val().jobs);
-      $('#userSolutions').text(snapshot.val().userSolutions);
-      $('#userJobs').text(snapshot.val().userSolutions);
-
-    });
-
-    xhrRequest('initialRequest.json', true);
-    globe.animate();
-
-    var animate = function() {
-      requestAnimationFrame(animate);
-      if (!firstUpdate) {
-        handleThrobbingAnimation();
-        TWEEN.update();
-      }
-      handleRequestTiming();
-    }
-
-    var handleThrobbingAnimation = function() {
-      if (throbbingFrameCounter === (20)) {
-        //tween to new height every second
-        new TWEEN.Tween(globe).to({
-          time: timeStep / numSteps
-        }, 500).easing(TWEEN.Easing.Cubic.Out).start();
-        timeStep++;
-        throbbingFrameCounter = 0;
-        if (timeStep > numSteps) {
-          timeStep = 0;
-        }
-      }
-      throbbingFrameCounter++;
-    }
-
-    var handleRequestTiming = function() {
-      if (requestFrameCounter === fps * numSecondsBetweenRequests) {
+      var animate = function() {
+        requestAnimationFrame(animate);
         if (!firstUpdate) {
-          globe.deletePoints();
+          handleThrobbingAnimation();
+          TWEEN.update();
         }
-        firstUpdate = false;
-        numSecondsBetweenRequests += 100000;
-        requestFrameCounter = 0;
-        xhrRequest('updatedRequest.json', false)
+        handleRequestTiming();
       }
-      requestFrameCounter++;
+
+      var handleThrobbingAnimation = function() {
+        if (throbbingFrameCounter === (20)) {
+          //tween to new height every second
+          new TWEEN.Tween(globe).to({
+            time: timeStep / numSteps
+          }, 500).easing(TWEEN.Easing.Cubic.Out).start();
+          timeStep++;
+          throbbingFrameCounter = 0;
+          if (timeStep > numSteps) {
+            timeStep = 0;
+          }
+        }
+        throbbingFrameCounter++;
+      }
+
+      var handleRequestTiming = function() {
+        if (requestFrameCounter === fps * numSecondsBetweenRequests) {
+          if (!firstUpdate) {
+            globe.deletePoints();
+          }
+          firstUpdate = false;
+          numSecondsBetweenRequests += 100000;
+          requestFrameCounter = 0;
+          xhrRequest('updatedRequest.json', false)
+        }
+        requestFrameCounter++;
+      }
+      var time = 7200;
+      var duration = moment.duration(time * 1000, 'milliseconds');
+      var interval = 1000;
+
+      var countdown = function(){
+        duration = moment.duration(duration.asMilliseconds() - interval, 'milliseconds');
+        //show how many hours, minutes and seconds are left
+        $('.countdown').text(moment(duration.asMilliseconds()).format('h:mm:ss'));
+      }
     }
-    var count=30;
 
-    var counter=setInterval(timer, 1000);
+      animate();
 
-      function timer() {
-        count = count - 1;
-        if (count <= 0) {
-          clearInterval(counter);
-          return;
-        }
-
-        document.getElementById("timer").innerHTML = count + " secs"; 
-      }
-
-    animate();
-
-  }
+  });
 
   </script>
 
