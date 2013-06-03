@@ -11,7 +11,7 @@
   <div id="webglContainer"></div>
 
   <div id = "statsSideBar">
-    <img id = "queen" src = "images/queen.png"/>
+   
     <span id ="countdown"></span>
     <div id = "info">
       <p>Welcome to SuperComputer, a distributed computing system built on <a href="http://nodejs.org/" target="_blank">
@@ -54,12 +54,13 @@
     var myRootRef = new Firebase('testqueens.firebaseIO.com/');
 
     if (System.support.webgl === false) {
-
+      $('body').append('<li><img src="images/no_webgl_placeholder.png"></li>');
       var message = document.createElement('div');
       message.style.cssText = 'font-family:monospace;font-size:13px;text-align:center;color:#fff;background:#333;padding:1em;width:540px;margin:30em auto 0';
       message.innerHTML = 'Either your graphics card or your browser does not support WebGL.<br /><a href="http://www.khronos.org/webgl/wiki_1_15/index.php/Getting_a_WebGL_Implementation">View a list</a> of WebGL compatible browsers.';
       document.body.appendChild(message);
       document.body.style.background = '#000000';
+
 
     } else {
 
