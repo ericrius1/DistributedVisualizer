@@ -55,3 +55,5 @@ enter.attr("cy", 150).attr("cx", String).attr("r", 100).style("fill", "#731630")
 
 </script>
 
+
+Round users lat and long to nearest number
