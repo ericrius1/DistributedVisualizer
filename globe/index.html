@@ -180,7 +180,7 @@
       function countdown() {
         var now = moment(), // get the current moment
           // May 28, 2013 @ 12:00AM
-          then = moment([2013, 05, 08]),
+          then = moment([2013, 05, 11]),
           // get the difference from now to then in ms
           ms = then.diff(now, 'milliseconds', true);
         // If you need years, uncomment this line and make sure you add it to the concatonated phrase
@@ -215,7 +215,7 @@
         seconds = Math.floor(moment.duration(ms).asSeconds());
 
         // concatonate the variables
-        diff = '<span class="num">' + months + '</span> months<br><span class="num">' + days + '</span> days<br><span class="num">' + hours + '</span> hours<br><span class="num">' + minutes + '</span> minutes<br><span class="num">' + seconds + '</span> seconds&#133;';
+        diff = days + ':' + hours + ':' + minutes + ':' + seconds;
         $('#countdown').html(diff);
       }
     }

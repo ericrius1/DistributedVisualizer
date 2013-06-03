@@ -57,7 +57,7 @@
 
       #queen {
         position:absolute;
-        right:40%;
+        right:20%;
         bottom: 0;
         opacity: 0.15;
 
@@ -70,6 +70,12 @@
 
       #stats {
         border-top: 1px solid rgba(255,255,255,0.4);
+      }
+
+      #countdown {
+        position:absolute;
+        font: 30px Georgia;
+        left: 30%;
       }
 
       circle {
