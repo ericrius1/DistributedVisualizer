@@ -86,33 +86,24 @@
         var xhr = new XMLHttpRequest();
         xhr.addEventListener('load', function(e) {
           var data = JSON.parse(e.target.responseText);
-          if (isInitialRequest) {
-            constantData = data;
-            globe.initializeData(constantData[1], {
+         
+            globe.updateData(data[1], {
               format: 'magnitude',
               name: data[0],
-              animated: false,
+              animated: true,
               belowGlobe: true
             });
-            globe.createInitialPoints();
-          }
-          // } else {
-          //   globe.updateData(constantData[1], {
-          //     format: 'magnitude',
-          //     name: constantData[0],
-          //     animated: true,
-          //     belowGlobe: true
-          //   });
-          //   globe.updateData(data[1], {
-          //     format: 'magnitude',
-          //     name: data[0],
-          //     animated: true,
-          //     belowGlobe: false
-          //   });
+            globe.updateData(data[1], {
+              format: 'magnitude',
+              name: data[0],
+              animated: true,
+              belowGlobe: false,
+              height: .02
+            });
 
-          //   globe.createUpdatedPoints();
+            globe.createUpdatedPoints();
 
-          // }
+          
         }, false);
         xhr.open('GET', path, true);
         xhr.send(null);
@@ -138,7 +129,7 @@
           handleThrobbingAnimation();
           TWEEN.update();
         }
-        //handleRequestTiming();
+        handleRequestTiming();
 
       }
 
