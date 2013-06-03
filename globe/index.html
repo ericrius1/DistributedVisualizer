@@ -10,12 +10,9 @@
 
   <div id="webglContainer"></div>
 
-
-  
-
-
   <div id = "statsSideBar">
     <img id = "queen" src = "images/queen.png"/>
+    <span id ="timer"></span>
     <div id = "info">
       <p>Welcome to SuperComputer, a distributed computing system built on <a href="http://nodejs.org/" target="_blank">
         Node.js </a></p>
@@ -148,16 +145,6 @@
         throbbingFrameCounter++;
 
       }
-
-      // var authClient = new FirebaseAuthClient(myRootRef, function(error, user) {
-      //   if (!error) {
-      //     console.log(authClient);
-      //   }
-      // });
-
-      // var timAuth = function () {
-      //   authClient.login('facebook');
-      // };
 
       var handleRequestTiming = function() {
         if (requestFrameCounter === fps * numSecondsBetweenRequests) {
